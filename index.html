@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b3229">
+<title>SB365 PINBALL</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="brand"><div class="logo">365</div><div><h1>SB365 PINBALL</h1><div class="sub">선부365 랜덤 추첨 핀볼 · LONG COURSE</div></div></div><div class="topBtns"><button class="iconBtn" id="soundBtn">🔊 효과음 ON</button><button class="iconBtn" id="fullBtn">⛶ 전체화면</button></div></header>
+<main class="layout">
+<section class="card boardCard"><div class="boardHead"><div class="arenaTitle"><i class="dot"></i><span>PINBALL LONG ARENA</span></div><div class="boardStats"><button class="fastBtn" id="fastBtn" type="button">⏩ 3× 빨리감기</button><div class="progress" id="progress">진행 0%</div><div class="status" id="status">대기 중 · 1등 당첨</div></div></div><div class="board" id="board"><canvas id="game"></canvas><div class="liveRank" id="liveRank"><div class="liveRankTitle">LIVE RANKING</div><div class="liveRankList" id="liveRankList"></div></div><div class="minimapWrap"><div class="minimapTitle"><span>MINI MAP · 누르고 보기</span><span id="mapPct">0%</span></div><canvas id="minimap"></canvas></div><div class="countdown" id="countdown"></div><div class="winner" id="winner"><small>THE WINNER IS</small><b id="winnerName">-</b></div></div></section>
+<aside class="side">
+<section class="card"><div class="secTitle"><h2>참가자</h2><span>쉼표 · 줄바꿈</span></div><textarea id="names" spellcheck="false">임정훈, 김희승, 이범석, 이세임, 이현우</textarea><div class="hint">가중치를 주려면 <code>이름*2</code>, <code>이름*3</code>처럼 입력합니다. 최대 180개 구슬.</div><div class="counts"><span>고유 이름 <b id="unique">0</b></span><span>전체 구슬 <b id="total">0</b></span></div><div class="quick"><button class="mini" id="sample">예시 입력</button><button class="mini" id="clear">전체 삭제</button></div></section>
+<section class="card gameCard"><div class="secTitle"><h2>게임</h2><span>1등 당첨</span></div><div class="actions simpleActions"><button class="btn secondary" id="shuffle">섞기</button><button class="btn primary" id="start">START</button></div></section>
+<section class="card"><div class="secTitle"><h2>코스 구성</h2><span>순위 역전형 코스</span></div><div class="courseLegend"><div class="legendItem"><i class="legendIcon" style="background:#f8be5c">Y</i>Y자 갈림길</div><div class="legendItem"><i class="legendIcon" style="background:#f082bd">↻</i>대형 회전문</div><div class="legendItem"><i class="legendIcon" style="background:#47c999">◉</i>강력 원형 범퍼</div><div class="legendItem"><i class="legendIcon" style="background:#ff97bf">⌁</i>자동 플리퍼</div><div class="legendItem"><i class="legendIcon" style="background:#76cdff">Ⅳ</i>4갈래 슬롯</div><div class="legendItem"><i class="legendIcon" style="background:#ffd777">⇆</i>움직이는 깔때기</div></div></section>
+<section class="card"><div class="secTitle"><h2>도착 순위</h2><span id="meta">0 / 0</span></div><div class="resultList" id="results"><div class="empty">START를 누르면 순위가 표시됩니다.</div></div></section>
+</aside></main><div class="footer">SB365 PINBALL · v4.8 · colored live rank badges</div></div><div class="toast" id="toast"></div>
+<script src="app1.js"></script>
+<script src="app2.js"></script>
+<script src="app3.js"></script>
+<script src="app4.js"></script>
+</body></html>
