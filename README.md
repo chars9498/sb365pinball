@@ -6,7 +6,7 @@
 
 ## 공개 실행 주소
 
-https://sb365randomarena-chars9498-1742s-projects.vercel.app
+https://sb365randomarena48-chars9498-1742s-projects.vercel.app
 
 - 위 주소는 v4.8 4종 세트용 **production 주소**입니다.
 - 앱 자체에는 로그인/회원가입 기능이 없습니다.
@@ -29,6 +29,11 @@ https://sb365randomarena-chars9498-1742s-projects.vercel.app
 - 효과음 / 전체화면
 - 모바일 / 데스크톱 반응형 UI
 - 참가자 입력값 브라우저 자동 저장
+
+## 최근 수정
+
+- PINBALL 모드에서 신규 게임용 `altGame` 캔버스가 기존 핀볼 캔버스를 덮던 CSS 우선순위 오류 수정
+- 기본 PINBALL 모드에서는 `altGame`을 강제로 숨기고, GLASS BRIDGE / BATTLE ROYALE / ROCKET RACE에서만 표시되도록 수정
 
 ## 검증
 
