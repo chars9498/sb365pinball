@@ -51,8 +51,8 @@
   function begin(list){
     const {w,h}=resize(),cx=w/2,cy=h/2;
     const rx=w*.465, ry=h*.43;
-    S={cx,cy,startRX:rx,startRY:ry,rx,ry,out:[],fx:[],bomb:null,nextBomb:rnd(8,10),shieldItem:null,nextShield:rnd(6,9),sudden:false,racers:list.map((name,i)=>{const a=i/list.length*Math.PI*2+rnd(-.18,.18),rr=rnd(.18,.44);return{id:i,name,c:color(name),x:cx+Math.cos(a)*rx*rr,y:cy+Math.sin(a)*ry*rr,vx:rnd(-34,34),vy:rnd(-34,34),r:Math.max(10,Math.min(14,14-list.length*.035)),alive:true,punch:rnd(.65,1.45),wind:0,target:null,flash:0,hit:0,shield:0,phase:Math.random()*10};})};
-    running=true;last=started=performance.now();status.textContent='진행 중 · WIDE BOXING ARENA';event('🥊 넓은 링에서 시작! 초반 10초는 링이 줄어들지 않습니다',2000);updateRank();raf=requestAnimationFrame(loop);
+    S={cx,cy,startRX:rx,startRY:ry,rx,ry,out:[],fx:[],bomb:null,nextBomb:rnd(8,10),shieldItem:null,nextShield:rnd(6,9),sudden:false,racers:list.map((name,i)=>{const a=i/list.length*Math.PI*2+rnd(-.18,.18),rr=rnd(.18,.44);return{id:i,name,c:color(name),x:cx+Math.cos(a)*rx*rr,y:cy+Math.sin(a)*ry*rr,vx:rnd(-62,62),vy:rnd(-62,62),r:Math.max(10,Math.min(14,14-list.length*.035)),alive:true,punch:rnd(.65,1.45),wind:0,target:null,flash:0,hit:0,shield:0,phase:Math.random()*10};})};
+    running=true;last=started=performance.now();status.textContent='진행 중 · WIDE BOXING ARENA';event('🥊 SPEED UP! 넓은 링에서 빠르게 상대를 추격합니다',2000);updateRank();raf=requestAnimationFrame(loop);
   }
   function startBattle(){
     if(running||counting)return;const p=parse();if(p.out.length<2){pop('참가자를 2명 이상 입력하세요.');return;}
@@ -70,9 +70,10 @@
     const alive=S.racers.filter(r=>r.alive);
     for(const r of alive){
       r.punch-=dt;r.flash=Math.max(0,r.flash-dt*4);r.hit=Math.max(0,r.hit-dt*4);r.shield=Math.max(0,r.shield-dt);
-      if(r.wind>0){const prev=r.wind;r.wind-=dt;const t=S.racers.find(x=>x.id===r.target&&x.alive);if(t){const dx=t.x-r.x,dy=t.y-r.y,d=Math.hypot(dx,dy)||1;r.vx+=dx/d*14*dt;r.vy+=dy/d*14*dt;}if(prev>0&&r.wind<=0)punch(r);}else if(r.punch<=0){const n=nearest(r);if(n.t&&n.d<150){r.target=n.t.id;r.wind=.34;r.punch=S.sudden?rnd(.55,.9):rnd(.9,1.4);}else r.punch=rnd(.25,.55);}
-      const dx=S.cx-r.x,dy=S.cy-r.y,d=Math.hypot(dx,dy)||1,norm=ellipseN(r),inward=norm>.75?26:7;r.vx+=dx/d*inward*dt;r.vy+=dy/d*inward*dt;const tangent=Math.sin(elapsed*.8+r.phase)*7;r.vx+=-dy/d*tangent*dt;r.vy+=dx/d*tangent*dt;
-      r.vx*=Math.pow(.991,dt*60);r.vy*=Math.pow(.991,dt*60);const v=Math.hypot(r.vx,r.vy),max=S.sudden?285:225;if(v>max){r.vx=r.vx/v*max;r.vy=r.vy/v*max;}r.x+=r.vx*dt;r.y+=r.vy*dt;
+      if(r.wind>0){const prev=r.wind;r.wind-=dt;const t=S.racers.find(x=>x.id===r.target&&x.alive);if(t){const dx=t.x-r.x,dy=t.y-r.y,d=Math.hypot(dx,dy)||1;r.vx+=dx/d*25*dt;r.vy+=dy/d*25*dt;}if(prev>0&&r.wind<=0)punch(r);}else if(r.punch<=0){const n=nearest(r);if(n.t&&n.d<150){r.target=n.t.id;r.wind=.34;r.punch=S.sudden?rnd(.55,.9):rnd(.9,1.4);}else r.punch=rnd(.25,.55);}
+      const dx=S.cx-r.x,dy=S.cy-r.y,d=Math.hypot(dx,dy)||1,norm=ellipseN(r),inward=norm>.75?34:9;r.vx+=dx/d*inward*dt;r.vy+=dy/d*inward*dt;const tangent=Math.sin(elapsed*.95+r.phase)*14;r.vx+=-dy/d*tangent*dt;r.vy+=dx/d*tangent*dt;
+      const mover=nearest(r);if(mover.t){const mx=mover.t.x-r.x,my=mover.t.y-r.y,md=Math.hypot(mx,my)||1,chase=S.sudden?125:88;r.vx+=mx/md*chase*dt;r.vy+=my/md*chase*dt;}
+      r.vx*=Math.pow(.995,dt*60);r.vy*=Math.pow(.995,dt*60);const v=Math.hypot(r.vx,r.vy),max=S.sudden?365:315;if(v>max){r.vx=r.vx/v*max;r.vy=r.vy/v*max;}r.x+=r.vx*dt;r.y+=r.vy*dt;
       if(S.shieldItem&&Math.hypot(r.x-S.shieldItem.x,r.y-S.shieldItem.y)<r.r+18){r.shield=3.2;S.shieldItem=null;S.fx.push({type:'shield',x:r.x,y:r.y,age:0,ttl:.6});event(`🛡 ${r.name} 보호막 획득!`);beep(610,.05,.016);}
     }
     for(let i=0;i<alive.length;i++)for(let j=i+1;j<alive.length;j++){const a=alive[i],b=alive[j],dx=b.x-a.x,dy=b.y-a.y,rr=a.r+b.r,d2=dx*dx+dy*dy;if(d2<=.01||d2>=rr*rr)continue;const d=Math.sqrt(d2),nx=dx/d,ny=dy/d,ov=rr-d;a.x-=nx*ov/2;a.y-=ny*ov/2;b.x+=nx*ov/2;b.y+=ny*ov/2;const rel=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(rel<0){const imp=-rel*.35+6;a.vx-=imp*nx;a.vy-=imp*ny;b.vx+=imp*nx;b.vy+=imp*ny;}}
