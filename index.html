@@ -10,24 +10,23 @@
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><div class="logo">365</div><div><h1>SB365 PINBALL</h1><div class="sub">선부365 랜덤 추첨 핀볼 · LONG COURSE</div></div></div><div class="topBtns"><button class="iconBtn" id="soundBtn">🔊 효과음 ON</button><button class="iconBtn" id="fullBtn">⛶ 전체화면</button></div></header>
+<header class="top"><div class="brand"><div class="logo">365</div><div><h1>SB365 PINBALL</h1><div class="sub">선부365 랜덤 추첨 핀볼 · RANDOM ARENA</div></div></div><div class="topBtns"><button class="iconBtn" id="soundBtn">🔊 효과음 ON</button><button class="iconBtn" id="fullBtn">⛶ 전체화면</button></div></header>
 <div class="modeBar" id="modeBar" aria-label="게임 모드">
   <button class="modeTab active" data-mode="pinball" type="button"><b>01</b><span>PINBALL</span><small>긴 코스 핀볼</small></button>
-  <button class="modeTab" data-mode="glass" type="button"><b>02</b><span>GLASS BRIDGE</span><small>유리다리 레이스</small></button>
-  <button class="modeTab" data-mode="battle" type="button"><b>03</b><span>BATTLE ROYALE</span><small>마지막 생존</small></button>
-  <button class="modeTab" data-mode="rocket" type="button"><b>04</b><span>ROCKET RACE</span><small>랜덤 우주 레이스</small></button>
+  <button class="modeTab" data-mode="battle" type="button"><b>02</b><span>BATTLE ROYALE</span><small>권투 난투 생존전</small></button>
+  <button class="modeTab" data-mode="rocket" type="button"><b>03</b><span>ROCKET RACE</span><small>랜덤 우주 레이스</small></button>
 </div>
 <main class="layout">
 <section class="card boardCard"><div class="boardHead"><div class="arenaTitle"><i class="dot"></i><span id="arenaTitleText">PINBALL LONG ARENA</span></div><div class="boardStats"><button class="fastBtn" id="fastBtn" type="button">⏩ 3× 빨리감기</button><div class="progress" id="progress">진행 0%</div><div class="status" id="status">대기 중 · 1등 당첨</div></div></div><div class="board" id="board"><canvas id="game"></canvas><canvas id="altGame" class="altGame" aria-label="선택한 랜덤 게임"></canvas><div class="eventFeed" id="eventFeed"></div><div class="liveRank" id="liveRank"><div class="liveRankTitle">LIVE RANKING</div><div class="liveRankList" id="liveRankList"></div></div><div class="minimapWrap"><div class="minimapTitle"><span>MINI MAP · 누르고 보기</span><span id="mapPct">0%</span></div><canvas id="minimap"></canvas></div><div class="countdown" id="countdown"></div><div class="winner" id="winner"><small>THE WINNER IS</small><b id="winnerName">-</b></div></div></section>
 <aside class="side">
 <section class="card"><div class="secTitle"><h2>참가자</h2><span>쉼표 · 줄바꿈</span></div><textarea id="names" spellcheck="false">임정훈, 김희승, 이범석, 이세임, 이현우</textarea><div class="hint">가중치를 주려면 <code>이름*2</code>, <code>이름*3</code>처럼 입력합니다. 최대 180개 구슬.</div><div class="counts"><span>고유 이름 <b id="unique">0</b></span><span>전체 구슬 <b id="total">0</b></span></div><div class="quick"><button class="mini" id="sample">예시 입력</button><button class="mini" id="clear">전체 삭제</button></div></section>
 <section class="card gameCard"><div class="secTitle"><h2>게임</h2><span id="gameSub">1등 당첨</span></div><div class="actions simpleActions"><button class="btn secondary" id="shuffle">섞기</button><button class="btn primary" id="start">START</button></div></section>
-<section class="card"><div class="secTitle"><h2 id="courseTitle">코스 구성</h2><span id="courseSub">순위 역전형 코스</span></div><div class="courseLegend" id="courseLegend"><div class="legendItem"><i class="legendIcon" style="background:#f8be5c">Y</i>Y자 갈림길</div><div class="legendItem"><i class="legendIcon" style="background:#f082bd">↻</i>대형 회전문</div><div class="legendItem"><i class="legendIcon" style="background:#47c999">◉</i>강력 원형 범퍼</div><div class="legendItem"><i class="legendIcon" style="background:#ff97bf">⌁</i>자동 플리퍼</div><div class="legendItem"><i class="legendIcon" style="background:#76cdff">Ⅳ</i>4갈래 슬롯</div><div class="legendItem"><i class="legendIcon" style="background:#ffd777">⇆</i>움직이는 깔때기</div></div></section>
+<section class="card"><div class="secTitle"><h2 id="courseTitle">코스 구성</h2><span id="courseSub">순위 역전형 코스</span></div><div class="courseLegend" id="courseLegend"></div></section>
 <section class="card"><div class="secTitle"><h2>도착 순위</h2><span id="meta">0 / 0</span></div><div class="resultList" id="results"><div class="empty">START를 누르면 순위가 표시됩니다.</div></div></section>
-</aside></main><div class="footer">SB365 PINBALL · v4.8 · 4 GAME RANDOM ARENA</div></div><div class="toast" id="toast"></div>
+</aside></main><div class="footer">SB365 PINBALL · v4.8 · 3 GAME RANDOM ARENA</div></div><div class="toast" id="toast"></div>
 <script src="app1.js"></script>
 <script src="app2.js"></script>
 <script src="app3.js"></script>
-<script src="multigame.js"></script>
+<script src="arena.js"></script>
 <script src="app4.js"></script>
 </body></html>
