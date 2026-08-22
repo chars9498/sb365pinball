@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <title>선부365 근무표 반영</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#18212f;font-family:Arial,"Malgun Gothic",sans-serif}.wrap{max-width:620px;margin:48px auto;padding:20px}.card{background:#fff;border:1px solid #dfe5ee;border-radius:18px;padding:26px;box-shadow:0 10px 30px rgba(0,0,0,.07)}h1{font-size:25px;margin:0 0 8px}.sub{color:#667085;margin:0 0 18px}.info{background:#f2f6fb;border-radius:12px;padding:14px;margin:16px 0}.field{display:block;margin:16px 0}.field span{display:block;font-size:13px;font-weight:700;margin-bottom:7px}select,input,button{width:100%;padding:13px;border-radius:10px;border:1px solid #ccd5df;font-size:15px}button{border:0;background:#1f6feb;color:#fff;font-weight:800;cursor:pointer;margin-top:8px}button:disabled{opacity:.55;cursor:default}.status{margin-top:16px;padding:13px;border-radius:10px;background:#eef5ff;white-space:pre-wrap}.status.ok{background:#e9f8ee;color:#166534}.status.err{background:#fff0f0;color:#b42318}.small{font-size:12px;color:#667085;margin-top:12px}.badge{display:inline-block;background:#eef2f7;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:700;margin-right:6px}
+  </style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+  <h1>선부365 근무표 반영</h1>
+  <p class="sub">관리자 전용 · 확정된 구글 근무표를 선부365에 저장합니다.</p>
+  <div class="info"><div id="week"><b>근무표 확인 중...</b></div><div id="summary" class="small"></div></div>
+  <label class="field"><span>관리자</span><select id="admin"><option value="">관리자 목록 불러오는 중...</option></select></label>
+  <label class="field"><span>선부365 비밀번호</span><input id="pw" type="password" autocomplete="current-password" placeholder="비밀번호 입력" /></label>
+  <button id="sync" disabled>근무표 반영</button>
+  <div id="status" class="status">페이지 초기화 중...</div>
+  <div class="small">비밀번호는 이 페이지에 저장되지 않으며, 관리자 인증 후에만 근무표가 반영됩니다.</div>
+</div></div>
+<script>
+const BASE='https://oqqtvnxiyupdzgrpljvp.supabase.co';
+const KEY='sb_publishable_wcLiI6kpphu8biFuz_1hag_gMq95p0W';
+const q=new URLSearchParams(location.search);
+const ref=q.get('ref')||'';
+const week=q.get('week')||'';
+const statusEl=document.getElementById('status');
+const adminEl=document.getElementById('admin');
+const btn=document.getElementById('sync');
+const pwEl=document.getElementById('pw');
+function setStatus(text,cls=''){statusEl.textContent=text;statusEl.className='status '+cls;}
+function empEmail(id){return String(id||'').toLowerCase()+'@sunbu365.internal';}
+async function boot(){
+  document.getElementById('week').innerHTML='<span class="badge">주간</span><b>'+escapeHtml(week||'주간 미지정')+'</b>';
+  document.getElementById('summary').textContent='구글시트 확정본을 Supabase 근무표 DB에 반영합니다.';
+  if(!ref||!week){setStatus('반영 정보가 없습니다. 구글시트의 반영 버튼에서 다시 열어주세요.','err');return;}
+  try{
+    const r=await fetch(BASE+'/rest/v1/login_directory?select=employee_id,name,dept&active=eq.true&is_guest=eq.false&order=name.asc',{headers:{apikey:KEY}});
+    if(!r.ok) throw new Error('관리자 목록 조회 실패 ('+r.status+')');
+    const rows=await r.json();
+    const admins=(rows||[]).filter(x=>x.dept==='관리자');
+    adminEl.innerHTML='<option value="">관리자를 선택하세요</option>'+admins.map(x=>'<option value="'+escapeAttr(x.employee_id)+'">'+escapeHtml(x.name)+'</option>').join('');
+    if(!admins.length) throw new Error('관리자 계정을 찾지 못했습니다.');
+    btn.disabled=false; setStatus('준비 완료 · 관리자 선택과 비밀번호 입력 후 근무표 반영을 누르세요.');
+  }catch(e){setStatus(e.message||'초기화 실패','err');}
+}
+btn.onclick=async()=>{
+  const id=adminEl.value, pw=pwEl.value||'';
+  if(!id||!pw){setStatus('관리자와 비밀번호를 입력하세요.','err');return;}
+  btn.disabled=true; btn.textContent='반영 중...'; setStatus('관리자 인증 중...');
+  try{
+    const lr=await fetch(BASE+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:KEY,'content-type':'application/json'},body:JSON.stringify({email:empEmail(id),password:pw})});
+    const session=await lr.json();
+    if(!lr.ok||!session.access_token) throw new Error('비밀번호가 올바르지 않습니다.');
+    setStatus('근무표를 저장하고 있습니다...');
+    const sr=await fetch(BASE+'/functions/v1/sync-google-schedule',{method:'POST',headers:{apikey:KEY,authorization:'Bearer '+session.access_token,'content-type':'application/json'},body:JSON.stringify({ref,week})});
+    let out={}; try{out=await sr.json()}catch(_){throw new Error('동기화 서버 응답을 읽지 못했습니다.');}
+    if(!sr.ok||!out.ok) throw new Error(out.detail||out.error||'동기화 실패');
+    setStatus('반영 완료\n'+out.days+'일 · 하루 '+out.employees_per_day+'명 기준\n저장 행 '+out.saved_rows+'건','ok');
+    btn.textContent='반영 완료'; pwEl.value='';
+  }catch(e){setStatus(e.message||'반영 실패','err');btn.disabled=false;btn.textContent='다시 반영';}
+};
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function escapeAttr(s){return escapeHtml(s);}
+boot();
+</script>
+</body></html>
